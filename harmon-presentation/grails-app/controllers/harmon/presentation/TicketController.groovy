@@ -101,7 +101,7 @@ class TicketController {
 	def calendar = {
 		String[] week = new String[168]
 		
-		return [week: week]
+		[week: week]
 	}
 	
 	def tag = {

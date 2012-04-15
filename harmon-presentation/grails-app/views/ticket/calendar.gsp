@@ -36,6 +36,7 @@
 	var width = 100;
 	var height = 40;
 	var row = 0;
+	var srcObj = null;
 
 	function getTicket(obj, id)
 		{
@@ -61,6 +62,7 @@
 	
 	function handleDragStart(e) {
 		this.style.opacity = '0.4'; // this / e.target is the source node.
+		srcObj = this;
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
 	}
@@ -91,7 +93,14 @@
 		this.className = 'hour';
 		// See the section on the DataTransfer object.
 		if(e.dataTransfer.getData('text/html') != null){
-			getTicket(this, e.dataTransfer.getData('text/html'));
+			if(!isNaN( parseInt( e.dataTransfer.getData('text/html') ) )){
+				getTicket(this, e.dataTransfer.getData('text/html'));
+			}else{
+				if(srcObj!=this){
+					srcObj.innerHTML = this.innerHTML;
+				}
+				this.innerHTML = e.dataTransfer.getData('text/html');
+			}
 		}
 		return false;
 	}

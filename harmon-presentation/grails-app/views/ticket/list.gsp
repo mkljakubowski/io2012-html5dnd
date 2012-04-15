@@ -1,10 +1,10 @@
 
-<%@ page import="harmon.presentation.Person" %>
+<%@ page import="harmon.presentation.Ticket" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <g:set var="entityName" value="${message(code: 'person.label', default: 'Person')}" />
+        <g:set var="entityName" value="${message(code: 'ticket.label', default: 'Ticket')}" />
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>
     <body>
@@ -22,23 +22,23 @@
                     <thead>
                         <tr>
                         
-                            <g:sortableColumn property="id" title="${message(code: 'person.id.label', default: 'Id')}" />
+                            <g:sortableColumn property="id" title="${message(code: 'ticket.id.label', default: 'Id')}" />
                         
-                            <g:sortableColumn property="name" title="${message(code: 'person.name.label', default: 'Name')}" />
+                            <th><g:message code="ticket.lecturer.label" default="Lecturer" /></th>
                         
-                            <th><g:message code="person.ticket.label" default="Ticket" /></th>
+                            <th><g:message code="ticket.room.label" default="Room" /></th>
                         
                         </tr>
                     </thead>
                     <tbody>
-                    <g:each in="${personInstanceList}" status="i" var="personInstance">
+                    <g:each in="${ticketInstanceList}" status="i" var="ticketInstance">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${personInstance.id}">${fieldValue(bean: personInstance, field: "id")}</g:link></td>
+                            <td><g:link action="show" id="${ticketInstance.id}">${fieldValue(bean: ticketInstance, field: "id")}</g:link></td>
                         
-                            <td>${fieldValue(bean: personInstance, field: "name")}</td>
+                            <td>${fieldValue(bean: ticketInstance, field: "lecturer")}</td>
                         
-                            <td>${fieldValue(bean: personInstance, field: "ticket")}</td>
+                            <td>${fieldValue(bean: ticketInstance, field: "room")}</td>
                         
                         </tr>
                     </g:each>
@@ -46,7 +46,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${personInstanceTotal}" />
+                <g:paginate total="${ticketInstanceTotal}" />
             </div>
         </div>
     </body>

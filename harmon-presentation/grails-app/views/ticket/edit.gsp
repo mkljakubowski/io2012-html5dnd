@@ -1,11 +1,11 @@
 
 
-<%@ page import="harmon.presentation.Person" %>
+<%@ page import="harmon.presentation.Ticket" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <g:set var="entityName" value="${message(code: 'person.label', default: 'Person')}" />
+        <g:set var="entityName" value="${message(code: 'ticket.label', default: 'Ticket')}" />
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
     </head>
     <body>
@@ -19,33 +19,33 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <g:hasErrors bean="${personInstance}">
+            <g:hasErrors bean="${ticketInstance}">
             <div class="errors">
-                <g:renderErrors bean="${personInstance}" as="list" />
+                <g:renderErrors bean="${ticketInstance}" as="list" />
             </div>
             </g:hasErrors>
             <g:form method="post" >
-                <g:hiddenField name="id" value="${personInstance?.id}" />
-                <g:hiddenField name="version" value="${personInstance?.version}" />
+                <g:hiddenField name="id" value="${ticketInstance?.id}" />
+                <g:hiddenField name="version" value="${ticketInstance?.version}" />
                 <div class="dialog">
                     <table>
                         <tbody>
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                  <label for="name"><g:message code="person.name.label" default="Name" /></label>
+                                  <label for="lecturer"><g:message code="ticket.lecturer.label" default="Lecturer" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: personInstance, field: 'name', 'errors')}">
-                                    <g:textField name="name" value="${personInstance?.name}" />
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'lecturer', 'errors')}">
+                                    <g:select name="lecturer.id" from="${harmon.presentation.Person.list()}" optionKey="id" value="${ticketInstance?.lecturer?.id}"  />
                                 </td>
                             </tr>
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                  <label for="ticket"><g:message code="person.ticket.label" default="Ticket" /></label>
+                                  <label for="room"><g:message code="ticket.room.label" default="Room" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: personInstance, field: 'ticket', 'errors')}">
-                                    <g:select name="ticket.id" from="${harmon.presentation.Ticket.list()}" optionKey="id" value="${personInstance?.ticket?.id}"  />
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'room', 'errors')}">
+                                    <g:select name="room.id" from="${harmon.presentation.Room.list()}" optionKey="id" value="${ticketInstance?.room?.id}"  />
                                 </td>
                             </tr>
                         

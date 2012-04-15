@@ -2,7 +2,7 @@ package harmon.presentation
 
 class PersonController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+  /*  static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
         redirect(action: "list", params: params)
@@ -96,5 +96,7 @@ class PersonController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'person.label', default: 'Person'), params.id])}"
             redirect(action: "list")
         }
-    }
+    } */
+	
+	static scaffold = true
 }

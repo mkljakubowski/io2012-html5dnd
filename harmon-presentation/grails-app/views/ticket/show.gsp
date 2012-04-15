@@ -1,10 +1,10 @@
 
-<%@ page import="harmon.presentation.Person" %>
+<%@ page import="harmon.presentation.Ticket" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <g:set var="entityName" value="${message(code: 'person.label', default: 'Person')}" />
+        <g:set var="entityName" value="${message(code: 'ticket.label', default: 'Ticket')}" />
         <title><g:message code="default.show.label" args="[entityName]" /></title>
     </head>
     <body>
@@ -23,23 +23,23 @@
                     <tbody>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="person.id.label" default="Id" /></td>
+                            <td valign="top" class="name"><g:message code="ticket.id.label" default="Id" /></td>
                             
-                            <td valign="top" class="value">${fieldValue(bean: personInstance, field: "id")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="person.name.label" default="Name" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: personInstance, field: "name")}</td>
+                            <td valign="top" class="value">${fieldValue(bean: ticketInstance, field: "id")}</td>
                             
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="person.ticket.label" default="Ticket" /></td>
+                            <td valign="top" class="name"><g:message code="ticket.lecturer.label" default="Lecturer" /></td>
                             
-                            <td valign="top" class="value"><g:link controller="ticket" action="show" id="${personInstance?.ticket?.id}">${personInstance?.ticket?.encodeAsHTML()}</g:link></td>
+                            <td valign="top" class="value"><g:link controller="person" action="show" id="${ticketInstance?.lecturer?.id}">${ticketInstance?.lecturer?.encodeAsHTML()}</g:link></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="ticket.room.label" default="Room" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="room" action="show" id="${ticketInstance?.room?.id}">${ticketInstance?.room?.encodeAsHTML()}</g:link></td>
                             
                         </tr>
                     
@@ -48,7 +48,7 @@
             </div>
             <div class="buttons">
                 <g:form>
-                    <g:hiddenField name="id" value="${personInstance?.id}" />
+                    <g:hiddenField name="id" value="${ticketInstance?.id}" />
                     <span class="button"><g:actionSubmit class="edit" action="edit" value="${message(code: 'default.button.edit.label', default: 'Edit')}" /></span>
                     <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
                 </g:form>

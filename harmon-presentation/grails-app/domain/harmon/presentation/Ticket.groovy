@@ -2,9 +2,13 @@ package harmon.presentation
 
 class Ticket {
 
-	static hasOne = [lecturer:Person]
-	Date[] dates
+	static belongsTo = [lecturer:Person, room: Room]
+	//Date[] dates
 		
     static constraints = {
     }
+	
+	String toString(){
+		return lecturer.name + " " + room.name + " " + new Date().format("HH-mm-ss")
+	}
 }

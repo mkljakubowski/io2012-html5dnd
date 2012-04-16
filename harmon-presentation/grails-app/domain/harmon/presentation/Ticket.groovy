@@ -4,6 +4,7 @@ class Ticket {
 
 	static belongsTo = [lecturer:Person, room: Room]
 	//Date[] dates
+	int minute
 		
     static constraints = {
     }

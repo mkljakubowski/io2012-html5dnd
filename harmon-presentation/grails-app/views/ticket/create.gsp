@@ -39,6 +39,15 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
+                                    <label for="minute"><g:message code="ticket.minute.label" default="Minute" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'minute', 'errors')}">
+                                    <g:textField name="minute" value="${fieldValue(bean: ticketInstance, field: 'minute')}" />
+                                </td>
+                            </tr>
+                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
                                     <label for="room"><g:message code="ticket.room.label" default="Room" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'room', 'errors')}">

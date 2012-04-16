@@ -1,1 +1,1 @@
-${ticketInstance}
+<div class="tag" id="${ ticketInstance.id }"><span style="display:none">${ticketInstance.minute/2}px</span>${ticketInstance}</div>

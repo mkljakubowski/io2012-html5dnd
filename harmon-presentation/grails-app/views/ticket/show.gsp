@@ -37,6 +37,13 @@
                         </tr>
                     
                         <tr class="prop">
+                            <td valign="top" class="name"><g:message code="ticket.minute.label" default="Minute" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: ticketInstance, field: "minute")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
                             <td valign="top" class="name"><g:message code="ticket.room.label" default="Room" /></td>
                             
                             <td valign="top" class="value"><g:link controller="room" action="show" id="${ticketInstance?.room?.id}">${ticketInstance?.room?.encodeAsHTML()}</g:link></td>

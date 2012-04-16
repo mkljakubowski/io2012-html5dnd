@@ -105,6 +105,8 @@
                             <g:sortableColumn property="id" title="${message(code: 'ticket.id.label', default: 'Id')}" />
                         
                             <th><g:message code="ticket.lecturer.label" default="Lecturer" /></th>
+                            
+                            <th>Minute</th>
                         
                             <th><g:message code="ticket.room.label" default="Room" /></th>
                         
@@ -119,8 +121,10 @@
                         
                             <td>${fieldValue(bean: ticketInstance, field: "lecturer")}</td>
                         
-                            <td>${fieldValue(bean: ticketInstance, field: "room")}</td>
+                            <td>${fieldValue(bean: ticketInstance, field: "minute")}</td>
                         
+                            <td>${fieldValue(bean: ticketInstance, field: "room")}</td>
+                            
                         	<td draggable="true" class="ticket" id="${fieldValue(bean: ticketInstance, field: "id")}"></td>
                         </tr>
                     </g:each>

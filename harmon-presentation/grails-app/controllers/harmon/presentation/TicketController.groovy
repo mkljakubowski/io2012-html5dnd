@@ -99,7 +99,7 @@ class TicketController {
     }
 	
 	def calendar = {
-		String[] week = new String[168]
+		String[][] week = new String[24][7]
 		
 		[week: week]
 	}

@@ -85,34 +85,35 @@ td {
 		}
 		xmlhttp.onreadystatechange=function(){
 		  if (xmlhttp.readyState==4 && xmlhttp.status==200){
-		    obj.innerHTML+=xmlhttp.responseText;
-			tic = obj.childNodes[obj.childNodes.length-1]; 
+			obj.innerHTML+=xmlhttp.responseText;
+			tic = obj.childNodes[obj.childNodes.length-1];
 		   	tic.style.position="absolute";
-		    tic.style.top = (mouseY-10) + "px";
-		    alert(mouseY);
-			tic.addEventListener('drop', ticketHandleDrop, false);
+			while(!mouseY){;}
+		   	tic.style.top = (mouseY-10) + "px";
+		    
+			/*tic.addEventListener('drop', ticketHandleDrop, false);
 		    tic.addEventListener('dragleave', ticketHandleDragLeave, false);
 		    tic.addEventListener('dragenter', ticketHandleDragEnter, false);
 		    tic.addEventListener('dragover', ticketHandleDragOver, false);
 		    tic.addEventListener('dragend', ticketHandleDragEnd, false);
 		    tic.addEventListener('dragstart', ticketHandleDragStart, false);
-//		    tic.addEventListener('mouseover', ticketHandleMouseEnter, false);
-//		    tic.addEventListener('mouseout', ticketHandleMouseLeave, false);
+		    tic.addEventListener('mouseover', ticketHandleMouseEnter, false);
+		    tic.addEventListener('mouseout', ticketHandleMouseLeave, false);*/
 		  }
 		}
 		xmlhttp.open("POST","/harmon-presentation/ticket/tag/"+id,true);
 		xmlhttp.send();
 	}
 
-/*	function ticketHandleMouseEnter(e){
-		alert(this.parent.getAttribute("draggable"));
+	function ticketHandleMouseEnter(){
+		alert(this.parent);
 		this.parent.setAttribute("draggable", "false");
 		alert(this.parent.getAttribute("draggable"));
 	}
 	
-	function ticketHandleMouseLeave(e){
+	function ticketHandleMouseLeave(){
 		this.parent.setAttribute("draggable", "true");
-	}*/
+	}
 	
 	function ticketHandleDragStart(e) {
 		this.style.opacity = '0.4'; // this / e.target is the source node.
@@ -135,7 +136,7 @@ td {
 			e.preventDefault(); // Necessary. Allows us to drop.
 		}
 		e.dataTransfer.dropEffect = 'move'; // See the section on the DataTransfer object.
-
+		
 		return false;
 	}
 
@@ -148,7 +149,6 @@ td {
 	function ticketHandleDragEnter(e) {
 		// this / e.target is the current hover target.
 		this.className = 'over';
-		$(document).mousemove();
 	}
 
 	function dayHandleDragLeave(e) {
@@ -169,7 +169,7 @@ td {
 		// See the section on the DataTransfer object.
 		if(e.dataTransfer.getData('text/html') != null){
 			if(!isNaN( parseInt( e.dataTransfer.getData('text/html') ) )){
-				getTicket(this, e.dataTransfer.getData('text/html'));
+				setTimeout(getTicket(this, e.dataTransfer.getData('text/html')),1000);
 			}else{
 				//not dragging an id
 			}

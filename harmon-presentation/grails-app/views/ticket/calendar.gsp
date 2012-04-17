@@ -15,11 +15,12 @@
 
 .target {
 	background: #EEE;
+	display: block;
 }
 
 .tag {
 	background: #DDD;
-	height: 90px;
+	display: block;
 }
 
 .calendar {
@@ -55,6 +56,13 @@ td {
 	width: 120px;
 	height: 40px;
 }
+h2 {
+	color: #48802C;
+	font-weight: normal;
+	font-size: 16px;
+	margin: .8em 0 .3em 0;
+	text-align: center;
+}
 </style>
 <g:javascript library="jquery" plugin="jquery" />
 <script type="text/javascript">
@@ -78,6 +86,7 @@ td {
 		{
 		var xmlhttp;
 		var tic = null;
+		var tics = [];
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 			xmlhttp=new XMLHttpRequest();
 		}else{// code for IE6, IE5
@@ -85,34 +94,43 @@ td {
 		}
 		xmlhttp.onreadystatechange=function(){
 		  if (xmlhttp.readyState==4 && xmlhttp.status==200){
+		   	var counter = 0;
+			while(!mouseY){counter++; if(counter>10000){return;}}		//if getting mousey fails then abort
 			obj.innerHTML+=xmlhttp.responseText;
 			tic = obj.childNodes[obj.childNodes.length-1];
 		   	tic.style.position="absolute";
-			while(!mouseY){;}
 		   	tic.style.top = (mouseY-10) + "px";
-		    
-			/*tic.addEventListener('drop', ticketHandleDrop, false);
-		    tic.addEventListener('dragleave', ticketHandleDragLeave, false);
-		    tic.addEventListener('dragenter', ticketHandleDragEnter, false);
-		    tic.addEventListener('dragover', ticketHandleDragOver, false);
-		    tic.addEventListener('dragend', ticketHandleDragEnd, false);
-		    tic.addEventListener('dragstart', ticketHandleDragStart, false);
-		    tic.addEventListener('mouseover', ticketHandleMouseEnter, false);
-		    tic.addEventListener('mouseout', ticketHandleMouseLeave, false);*/
+			tic.style.height = "90px";
+			
+			tics = obj.childNodes;
+			$.each(tics, function(index, tici) {
+				if(tici.className=="tag"){
+					tici.addEventListener('mouseover', ticketHandleMouseEnter, false);
+					tici.addEventListener('mouseout', ticketHandleMouseLeave, false);
+					tici.addEventListener('drop', ticketHandleDrop, false);
+					tici.addEventListener('dragleave', ticketHandleDragLeave, false);
+					tici.addEventListener('dragenter', ticketHandleDragEnter, false);
+					tici.addEventListener('dragover', ticketHandleDragOver, false);
+					tici.addEventListener('dragend', ticketHandleDragEnd, false);
+					tici.addEventListener('dragstart', ticketHandleDragStart, false);
+				}
+			});
 		  }
 		}
 		xmlhttp.open("POST","/harmon-presentation/ticket/tag/"+id,true);
 		xmlhttp.send();
 	}
 
-	function ticketHandleMouseEnter(){
-		alert(this.parent);
-		this.parent.setAttribute("draggable", "false");
-		alert(this.parent.getAttribute("draggable"));
+	function ticketHandleMouseEnter(e){
+		$.each(days, function(index, day) {
+			day.setAttribute("draggable", "false");
+		});
 	}
 	
 	function ticketHandleMouseLeave(){
-		this.parent.setAttribute("draggable", "true");
+		$.each(days, function(index, day) {
+			day.setAttribute("draggable", "true");
+		});
 	}
 	
 	function ticketHandleDragStart(e) {
@@ -120,6 +138,9 @@ td {
 		srcObj = this;
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
+		/*$.each(days, function(index, day) {
+			day.setAttribute("draggable", "false");
+		});*/
 	}
 
 	function dayHandleDragOver(e) {
@@ -149,6 +170,9 @@ td {
 	function ticketHandleDragEnter(e) {
 		// this / e.target is the current hover target.
 		this.className = 'over';
+		$.each(days, function(index, day) {
+			day.setAttribute("draggable", "false");
+		});
 	}
 
 	function dayHandleDragLeave(e) {
@@ -158,6 +182,9 @@ td {
 
 	function ticketHandleDragLeave(e) {
 		this.className = 'tag'; // this / e.target is previous target element.
+		$.each(days, function(index, day) {
+			day.setAttribute("draggable", "true");
+		});
 	}
 
 	function dayHandleDrop(e) {
@@ -169,9 +196,10 @@ td {
 		// See the section on the DataTransfer object.
 		if(e.dataTransfer.getData('text/html') != null){
 			if(!isNaN( parseInt( e.dataTransfer.getData('text/html') ) )){
-				setTimeout(getTicket(this, e.dataTransfer.getData('text/html')),1000);
+				getTicket(this, e.dataTransfer.getData('text/html'));
 			}else{
-				//not dragging an id
+				getTicket(this, srcObj.id);
+				srcObj.parentNode.removeChild(srcObj);
 			}
 		}
 		this.className = 'target';
@@ -193,7 +221,7 @@ td {
 				this.innerHTML = e.dataTransfer.getData('text/html');
 			}
 		}
-		this.className = 'target';
+		this.className = 'tag';
 		return false;
 	}
 
@@ -205,9 +233,13 @@ td {
 		});
 	}
 
-	function dayHandleDragEnd(e) {
+	function ticketHandleDragEnd(e) {
 		// this/e.target is the source node.
 		this.style.opacity = '1.0';
+		srcObj = null;
+		$.each(days, function(index, day) {
+			day.setAttribute("draggable", "true");
+		});
 	}
 
 	$(document).ready(function() {
@@ -223,6 +255,7 @@ td {
 			day.addEventListener('dragenter', dayHandleDragEnter, false);
 			day.addEventListener('dragover', dayHandleDragOver, false);
 			day.addEventListener('dragend', dayHandleDragEnd, false);
+			day.childNodes[0].innerHTML = day.id;
 		});
 	});
 </script>
@@ -230,12 +263,12 @@ td {
 <body>
 	<div class="body">
 		<div class="calendar">
-			<div draggable="true" class="target" id="monday"></div>
-			<div draggable="true" class="target" id="tuesday"></div>
-			<div draggable="true" class="target" id="wednesday"></div>
-			<div draggable="true" class="target" id="thursday"></div>
-			<div draggable="true" class="target" id="friday"></div>
-			<div draggable="true" class="target" id="saturday"></div>
+			<div draggable="true" class="target" id="monday"><h2></h2></div>
+			<div draggable="true" class="target" id="tuesday"><h2></h2></div>
+			<div draggable="true" class="target" id="wednesday"><h2></h2></div>
+			<div draggable="true" class="target" id="thursday"><h2></h2></div>
+			<div draggable="true" class="target" id="friday"><h2></h2></div>
+			<div draggable="true" class="target" id="saturday"><h2></h2></div>
 		</div>
 	</div>
 </body>

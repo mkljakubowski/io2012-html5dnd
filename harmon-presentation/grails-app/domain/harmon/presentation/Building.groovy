@@ -1,9 +1,10 @@
 package harmon.presentation
 
-class Person {
+class Building {
 
-	String firstname
-	String surname
+	static hasMany = [rooms: Room]
+	
+	String name
 	
     static constraints = {
     }

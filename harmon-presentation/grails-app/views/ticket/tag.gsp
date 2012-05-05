@@ -1,1 +1,3 @@
-<div class="tag" id="${ ticketInstance.id }" draggable="true"><span style="display:none">${ticketInstance.minute/2}px</span>${ticketInstance}</div>
+<div class="tag" id="${ ticketInstance.id }" draggable="true">
+	${ticketInstance}
+</div>

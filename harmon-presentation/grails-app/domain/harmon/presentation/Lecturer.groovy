@@ -1,12 +1,8 @@
 package harmon.presentation
 
-class Room {
+class Lecturer extends Person{
 
-	static belongsTo = [building: Building]
 	static hasMany = [ticket: Ticket]
-	
-	int maxPerson
-	String name
 	
     static constraints = {
     }

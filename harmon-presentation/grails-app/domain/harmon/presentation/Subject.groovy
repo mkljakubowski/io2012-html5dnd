@@ -1,11 +1,10 @@
 package harmon.presentation
 
-class Room {
+class Subject {
 
-	static belongsTo = [building: Building]
 	static hasMany = [ticket: Ticket]
 	
-	int maxPerson
+	int minPerson
 	String name
 	
     static constraints = {

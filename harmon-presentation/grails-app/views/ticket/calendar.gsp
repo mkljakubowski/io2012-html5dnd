@@ -60,7 +60,7 @@ h2 {
 	color: #48802C;
 	font-weight: normal;
 	font-size: 16px;
-	margin: .8em 0 .3em 0;
+	margin: .4em 0 .4em 0;
 	text-align: center;
 }
 </style>
@@ -74,16 +74,23 @@ h2 {
 	var srcObj = null;
 	var days = [];
 	var mouseX = 0, mouseY = 0;
-
+	var positionMe = null;
+	
 	document.onmousemove = getMousePosition;
+	document.onmouseup = getMousePosition;
 	
 	function getMousePosition(e){
 	      mouseX = e.pageX;
 	      mouseY = e.pageY;
+	      if(positionMe){
+	      	positionMe.style.top = (e.pageY - 10) + "px";
+	      	positionMe = null;
+	      }
 	};
 
 	function getTicket(obj, id)
 		{
+		$(document).mousemove();
 		var xmlhttp;
 		var tic = null;
 		var tics = [];
@@ -95,11 +102,15 @@ h2 {
 		xmlhttp.onreadystatechange=function(){
 		  if (xmlhttp.readyState==4 && xmlhttp.status==200){
 		   	var counter = 0;
-			while(!mouseY){counter++; if(counter>10000){return;}}		//if getting mousey fails then abort
 			obj.innerHTML+=xmlhttp.responseText;
 			tic = obj.childNodes[obj.childNodes.length-1];
 		   	tic.style.position="absolute";
-		   	tic.style.top = (mouseY-10) + "px";
+		   	if(mouseY){
+		   		tic.style.top = (mouseY - 10) + "px";
+		   	}else{
+		   		positionMe = tic;
+		   	}
+		   	
 			tic.style.height = "90px";
 			
 			tics = obj.childNodes;
@@ -138,9 +149,6 @@ h2 {
 		srcObj = this;
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
-		/*$.each(days, function(index, day) {
-			day.setAttribute("draggable", "false");
-		});*/
 	}
 
 	function dayHandleDragOver(e) {
@@ -148,7 +156,6 @@ h2 {
 			e.preventDefault(); // Necessary. Allows us to drop.
 		}
 		e.dataTransfer.dropEffect = 'move'; // See the section on the DataTransfer object.
-		$(document).mousemove();
 		return false;
 	}
 
@@ -157,14 +164,13 @@ h2 {
 			e.preventDefault(); // Necessary. Allows us to drop.
 		}
 		e.dataTransfer.dropEffect = 'move'; // See the section on the DataTransfer object.
-		
+		this.parentNode.className = 'target';
 		return false;
 	}
 
 	function dayHandleDragEnter(e) {
 		// this / e.target is the current hover target.
 		this.className = 'over';
-		$(document).mousemove();
 	}
 
 	function ticketHandleDragEnter(e) {
@@ -173,11 +179,11 @@ h2 {
 		$.each(days, function(index, day) {
 			day.setAttribute("draggable", "false");
 		});
+		this.parentNode.className = 'target';
 	}
 
 	function dayHandleDragLeave(e) {
 		this.className = 'target'; // this / e.target is previous target element.
-		$(document).mousemove();
 	}
 
 	function ticketHandleDragLeave(e) {
@@ -215,7 +221,8 @@ h2 {
 		// See the section on the DataTransfer object.
 		if(e.dataTransfer.getData('text/html') != null){
 			if(!isNaN( parseInt( e.dataTransfer.getData('text/html') ) )){
-				//getTicket(this, e.dataTransfer.getData('text/html'));
+				getTicket(this.parentNode, e.dataTransfer.getData('text/html'));
+				this.parentNode.removeChild(this);
 			}else{
 				srcObj.innerHTML = this.innerHTML;
 				this.innerHTML = e.dataTransfer.getData('text/html');
@@ -255,20 +262,23 @@ h2 {
 			day.addEventListener('dragenter', dayHandleDragEnter, false);
 			day.addEventListener('dragover', dayHandleDragOver, false);
 			day.addEventListener('dragend', dayHandleDragEnd, false);
+			day.innerHTML += "<h2></h2>";
 			day.childNodes[0].innerHTML = day.id;
 		});
 	});
+
 </script>
 </head>
 <body>
 	<div class="body">
 		<div class="calendar">
-			<div draggable="true" class="target" id="monday"><h2></h2></div>
-			<div draggable="true" class="target" id="tuesday"><h2></h2></div>
-			<div draggable="true" class="target" id="wednesday"><h2></h2></div>
-			<div draggable="true" class="target" id="thursday"><h2></h2></div>
-			<div draggable="true" class="target" id="friday"><h2></h2></div>
-			<div draggable="true" class="target" id="saturday"><h2></h2></div>
+			<div draggable="true" class="target" id="monday"></div>
+			<div draggable="true" class="target" id="tuesday"></div>
+			<div draggable="true" class="target" id="wednesday"></div>
+			<div draggable="true" class="target" id="thursday"></div>
+			<div draggable="true" class="target" id="friday"></div>
+			<div draggable="true" class="target" id="saturday"></div>
+			<div draggable="true" class="target" id="sunday"></div>
 		</div>
 	</div>
 </body>

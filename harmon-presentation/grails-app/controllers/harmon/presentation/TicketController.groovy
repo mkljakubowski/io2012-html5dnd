@@ -1,7 +1,7 @@
 package harmon.presentation
 
 class TicketController {
-
+/*
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
@@ -108,4 +108,5 @@ class TicketController {
 		def ticketInstance = Ticket.get(params.id)
 		[ticketInstance: ticketInstance]
 	}
+	*/
 }

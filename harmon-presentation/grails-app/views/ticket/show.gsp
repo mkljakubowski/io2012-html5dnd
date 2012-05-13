@@ -30,16 +30,23 @@
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="ticket.lecturer.label" default="Lecturer" /></td>
+                            <td valign="top" class="name"><g:message code="ticket.group.label" default="Group" /></td>
                             
-                            <td valign="top" class="value"><g:link controller="person" action="show" id="${ticketInstance?.lecturer?.id}">${ticketInstance?.lecturer?.encodeAsHTML()}</g:link></td>
+                            <td valign="top" class="value"><g:link controller="group" action="show" id="${ticketInstance?.group?.id}">${ticketInstance?.group?.encodeAsHTML()}</g:link></td>
                             
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="ticket.minute.label" default="Minute" /></td>
+                            <td valign="top" class="name"><g:message code="ticket.lecturer.label" default="Lecturer" /></td>
                             
-                            <td valign="top" class="value">${fieldValue(bean: ticketInstance, field: "minute")}</td>
+                            <td valign="top" class="value"><g:link controller="lecturer" action="show" id="${ticketInstance?.lecturer?.id}">${ticketInstance?.lecturer?.encodeAsHTML()}</g:link></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="ticket.length.label" default="Length" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: ticketInstance, field: "length")}</td>
                             
                         </tr>
                     
@@ -50,6 +57,13 @@
                             
                         </tr>
                     
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="ticket.subject.label" default="Subject" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="subject" action="show" id="${ticketInstance?.subject?.id}">${ticketInstance?.subject?.encodeAsHTML()}</g:link></td>
+                            
+                        </tr>
+
                     </tbody>
                 </table>
             </div>

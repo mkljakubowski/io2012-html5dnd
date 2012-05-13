@@ -11,4 +11,8 @@ class Room {
     static constraints = {
     }
 	
+	String toString(){
+		return name
+	}
+
 }

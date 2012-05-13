@@ -30,19 +30,28 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="lecturer"><g:message code="ticket.lecturer.label" default="Lecturer" /></label>
+                                    <label for="group"><g:message code="ticket.group.label" default="Group" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'lecturer', 'errors')}">
-                                    <g:select name="lecturer.id" from="${harmon.presentation.Person.list()}" optionKey="id" value="${ticketInstance?.lecturer?.id}"  />
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'group', 'errors')}">
+                                    <g:select name="group.id" from="${harmon.presentation.Group.list()}" optionKey="id" value="${ticketInstance?.group?.id}"  />
                                 </td>
                             </tr>
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="minute"><g:message code="ticket.minute.label" default="Minute" /></label>
+                                    <label for="lecturer"><g:message code="ticket.lecturer.label" default="Lecturer" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'minute', 'errors')}">
-                                    <g:textField name="minute" value="${fieldValue(bean: ticketInstance, field: 'minute')}" />
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'lecturer', 'errors')}">
+                                    <g:select name="lecturer.id" from="${harmon.presentation.Lecturer.list()}" optionKey="id" value="${ticketInstance?.lecturer?.id}"  />
+                                </td>
+                            </tr>
+                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="length"><g:message code="ticket.length.label" default="Length" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'length', 'errors')}">
+                                    <g:textField name="length" value="${fieldValue(bean: ticketInstance, field: 'length')}" />
                                 </td>
                             </tr>
                         
@@ -55,6 +64,15 @@
                                 </td>
                             </tr>
                         
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="subject"><g:message code="ticket.subject.label" default="Subject" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: ticketInstance, field: 'subject', 'errors')}">
+                                    <g:select name="subject.id" from="${harmon.presentation.Subject.list()}" optionKey="id" value="${ticketInstance?.subject?.id}"  />
+                                </td>
+                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>

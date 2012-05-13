@@ -9,4 +9,7 @@ class Building {
     static constraints = {
     }
 	
+	String toString(){
+		return name
+	}
 }

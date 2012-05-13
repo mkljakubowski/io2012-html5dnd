@@ -10,4 +10,7 @@ class Subject {
     static constraints = {
     }
 	
+	String toString(){
+		return name
+	}
 }

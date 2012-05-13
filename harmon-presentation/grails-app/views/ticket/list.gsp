@@ -1,4 +1,3 @@
-<!DOCTYPE HTML>
 
 <%@ page import="harmon.presentation.Ticket" %>
 <html>
@@ -7,7 +6,7 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'ticket.label', default: 'Ticket')}" />
         <title><g:message code="default.list.label" args="[entityName]" /></title>
-        <g:javascript library="jquery" plugin="jquery" />
+    <g:javascript library="jquery" plugin="jquery" />
         <style>
         	.ticket {
         		#background: #2D7;
@@ -28,7 +27,7 @@
 			function handleDragStart(e) {
 				this.style.opacity = '0.4'; // this / e.target is the source node.
 				e.dataTransfer.effectAllowed = 'move';
-				e.dataTransfer.setData('text/html', this.id);
+				e.dataTransfer.setData('text/javascript', JSON.stringify({ "type":"ticket", "id": this.id}));
 			}
 		
 			function handleDragOver(e) {
@@ -49,7 +48,7 @@
 //				this.className = 'hour'; // this / e.target is previous target element.
 			}
 		
-			function handleDrop(e) {
+			/*function handleDrop(e) {
 				// this / e.target is current target element.
 				if (e.stopPropagation) {
 					e.stopPropagation(); // stops the browser from redirecting.
@@ -57,10 +56,10 @@
 				//this.className = 'hour';
 				// See the section on the DataTransfer object.
 				if(e.dataTransfer.getData('text/html') != null){
-					getTicket(this, e.dataTransfer.getData('text/html'));
+					getTicket(this, e.dataTransfer.getData('text/javascript'));
 				}
 				return false;
-			}
+			}*/
 		
 			function handleDragEnd(e) {
 				// this/e.target is the source node.
@@ -104,13 +103,18 @@
                         
                             <g:sortableColumn property="id" title="${message(code: 'ticket.id.label', default: 'Id')}" />
                         
+                            <th><g:message code="ticket.group.label" default="Group" /></th>
+                        
                             <th><g:message code="ticket.lecturer.label" default="Lecturer" /></th>
-                            
-                            <th>Minute</th>
+                        
+                            <g:sortableColumn property="length" title="${message(code: 'ticket.length.label', default: 'Length')}" />
                         
                             <th><g:message code="ticket.room.label" default="Room" /></th>
                         
-                        	<th>Drag</th>
+                            <th><g:message code="ticket.subject.label" default="Subject" /></th>
+                            
+                            <th>Drag</th>
+                        
                         </tr>
                     </thead>
                     <tbody>
@@ -119,13 +123,18 @@
                         
                             <td><g:link action="show" id="${ticketInstance.id}">${fieldValue(bean: ticketInstance, field: "id")}</g:link></td>
                         
+                            <td>${fieldValue(bean: ticketInstance, field: "group")}</td>
+                        
                             <td>${fieldValue(bean: ticketInstance, field: "lecturer")}</td>
                         
-                            <td>${fieldValue(bean: ticketInstance, field: "minute")}</td>
+                            <td>${fieldValue(bean: ticketInstance, field: "length")}</td>
                         
                             <td>${fieldValue(bean: ticketInstance, field: "room")}</td>
-                            
+                        
+                            <td>${fieldValue(bean: ticketInstance, field: "subject")}</td>
+                        
                         	<td draggable="true" class="ticket" id="${fieldValue(bean: ticketInstance, field: "id")}"></td>
+                        
                         </tr>
                     </g:each>
                     </tbody>

@@ -97,7 +97,7 @@ class TicketController {
             redirect(action: "list")
         }
     }
-	
+	*/
 	def calendar = {
 		String[][] week = new String[24][7]
 		
@@ -105,8 +105,27 @@ class TicketController {
 	}
 	
 	def tag = {
-		def ticketInstance = Ticket.get(params.id)
-		[ticketInstance: ticketInstance]
+		def ticketInstance
+		def term
+		
+		Integer hour = params.minute.toInteger()/60
+		Integer minute = params.minute.toInteger()%60
+		def date = Date.parse("MM.dd.HH.mm", params.date + "." + hour + "." + minute)
+		
+		if(params.termid){
+			term = Term.get(params.termid)
+			term.date = date
+			term.save()
+			ticketInstance = term.ticket
+		}else if(params.ticketid){
+			ticketInstance = Ticket.get(params.ticketid)
+			term = new Term(ticket: ticketInstance, date: date)
+			term.save()
+		}
+
+		[ticketInstance: ticketInstance, termInstance: term]
 	}
-	*/
+
+	
+	static scaffold = true
 }

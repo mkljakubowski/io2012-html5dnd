@@ -2,8 +2,9 @@ package harmon.presentation
 
 class Term {
 
-	static hasOne = [ticket: Ticket]
-	static hasMany = [dates: Date]
+	static belongsTo = [ticket: Ticket]
+	
+	Date date
 	
     static constraints = {
     }

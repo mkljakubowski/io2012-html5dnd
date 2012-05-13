@@ -15,4 +15,8 @@ class Group {
 		table 'harmon_group'
 	}
 	
+	String toString(){
+		return name
+	}
+
 }

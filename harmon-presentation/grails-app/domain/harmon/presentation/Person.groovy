@@ -7,5 +7,9 @@ class Person {
 	
     static constraints = {
     }
-	
+
+	String toString(){
+		return surname + " " + firstname
+	}
+
 }

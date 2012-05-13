@@ -16,6 +16,7 @@ class BootStrap {
 		group.save()
 		
 		def sub = new Subject(name: "Inzynieria Oprogramowania", minPerson: 4)
+		sub.save()
 		
 		def tic = new Ticket(lecturer: jan, room: rum, minute: 90, group: group, subject: sub)
 		tic.save()

@@ -10,12 +10,17 @@
 <title>Calendar</title>
 <style>
 .over {
-	background: #AAA;
+	background: #fff url(../images/backgroundplan.png);
+}
+
+.overtag {
+	background: #aaa;
 }
 
 .target {
 	background: #EEE;
 	display: block;
+	background: #fff url(../images/backgroundplan.png);
 }
 
 .tag {
@@ -75,25 +80,37 @@ h2 {
 	var days = [];
 	var mouseX = 0, mouseY = 0;
 	var positionMe = null;
+	var ajaxreq = null;
+	var ajaxreqstr = null;
 	
 	document.onmousemove = getMousePosition;
 	document.onmouseup = getMousePosition;
+
+	function positionToMinute(pos){
+		return (pos - 40)*2;
+	}
 	
 	function getMousePosition(e){
-	      mouseX = e.pageX;
-	      mouseY = e.pageY;
-	      if(positionMe){
-	      	positionMe.style.top = (e.pageY - 10) + "px";
-	      	positionMe = null;
-	      }
+		mouseX = e.pageX;
+		mouseY = e.pageY;
+		if(positionMe){
+			positionMe.style.top = (e.pageY - 10) + "px";
+			positionMe = null;
+		}
+		if(ajaxreq){
+			ajaxreq.open("GET", ajaxreqstr + positionToMinute(e.pageY), true);
+			ajaxreq.send();
+			ajaxreq = null;
+		}
 	};
 
 	function getTicket(obj, id)
-		{
+	{
 		$(document).mousemove();
 		var xmlhttp;
 		var tic = null;
 		var tics = [];
+		var sendpos = 0;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 			xmlhttp=new XMLHttpRequest();
 		}else{// code for IE6, IE5
@@ -101,12 +118,12 @@ h2 {
 		}
 		xmlhttp.onreadystatechange=function(){
 		  if (xmlhttp.readyState==4 && xmlhttp.status==200){
-		   	var counter = 0;
 			obj.innerHTML+=xmlhttp.responseText;
 			tic = obj.childNodes[obj.childNodes.length-1];
 		   	tic.style.position="absolute";
 		   	if(mouseY){
 		   		tic.style.top = (mouseY - 10) + "px";
+		   		sendpos = mouseY - 10;
 		   	}else{
 		   		positionMe = tic;
 		   	}
@@ -128,8 +145,63 @@ h2 {
 			});
 		  }
 		}
-		xmlhttp.open("POST","/harmon-presentation/ticket/tag/"+id,true);
-		xmlhttp.send();
+		if(mouseY){
+			xmlhttp.open("GET","/harmon-presentation/ticket/tag?ticketid="+id+"&date="+obj.getAttribute('date') + "&minute=" + positionToMinute(mouseY), true);
+			xmlhttp.send();
+		}else{
+			ajaxreq = xmlhttp;	
+			ajaxreqstr = "/harmon-presentation/ticket/tag?ticketid="+id+"&date="+obj.getAttribute('date') + "&minute=";
+		}
+	}
+	
+	function getTerm(obj, id)
+	{
+		$(document).mousemove();
+		var xmlhttp;
+		var tic = null;
+		var tics = [];
+		var sendpos = 0;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}else{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+		  if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			obj.innerHTML+=xmlhttp.responseText;
+			tic = obj.childNodes[obj.childNodes.length-1];
+		   	tic.style.position="absolute";
+		   	if(mouseY){
+		   		tic.style.top = (mouseY - 10) + "px";
+		   		sendpos = mouseY - 10;
+		   	}else{
+		   		positionMe = tic;
+		   	}
+		   	
+			tic.style.height = "90px";
+			
+			tics = obj.childNodes;
+			$.each(tics, function(index, tici) {
+				if(tici.className=="tag"){
+					tici.addEventListener('mouseover', ticketHandleMouseEnter, false);
+					tici.addEventListener('mouseout', ticketHandleMouseLeave, false);
+					tici.addEventListener('drop', ticketHandleDrop, false);
+					tici.addEventListener('dragleave', ticketHandleDragLeave, false);
+					tici.addEventListener('dragenter', ticketHandleDragEnter, false);
+					tici.addEventListener('dragover', ticketHandleDragOver, false);
+					tici.addEventListener('dragend', ticketHandleDragEnd, false);
+					tici.addEventListener('dragstart', ticketHandleDragStart, false);
+				}
+			});
+		  }
+		}
+		if(mouseY){
+			xmlhttp.open("GET","/harmon-presentation/ticket/tag?termid="+id+"&date="+obj.getAttribute('date') + "&minute=" + positionToMinute(mouseY), true);
+			xmlhttp.send();
+		}else{
+			ajaxreq = xmlhttp;	
+			ajaxreqstr = "/harmon-presentation/ticket/tag?termid="+id+"&date="+obj.getAttribute('date') + "&minute=";
+		}
 	}
 
 	function ticketHandleMouseEnter(e){
@@ -148,7 +220,7 @@ h2 {
 		this.style.opacity = '0.4'; // this / e.target is the source node.
 		srcObj = this;
 		e.dataTransfer.effectAllowed = 'move';
-		e.dataTransfer.setData('text/html', this.innerHTML);
+		e.dataTransfer.setData('text/javascript', JSON.stringify({ "type":"term", "id": this.id }));
 	}
 
 	function dayHandleDragOver(e) {
@@ -175,7 +247,7 @@ h2 {
 
 	function ticketHandleDragEnter(e) {
 		// this / e.target is the current hover target.
-		this.className = 'over';
+		this.className = 'overtag';
 		$.each(days, function(index, day) {
 			day.setAttribute("draggable", "false");
 		});
@@ -200,11 +272,18 @@ h2 {
 		}
 		//this.className = 'hour';
 		// See the section on the DataTransfer object.
-		if(e.dataTransfer.getData('text/html') != null){
-			if(!isNaN( parseInt( e.dataTransfer.getData('text/html') ) )){
-				getTicket(this, e.dataTransfer.getData('text/html'));
+		
+		if(e.dataTransfer.getData('text/javascript') != null){
+			eval('var data='+e.dataTransfer.getData('text/javascript'));
+			if(!isNaN( parseInt( data.id ) )){
+				if(data.type == "term"){
+					getTerm(this, data.id);
+				}else if(data.type == "ticket"){
+					getTicket(this, data.id);
+				}
 			}else{
-				getTicket(this, srcObj.id);
+				alert(srcObj.id);
+				getTerm(this, srcObj.id);
 				srcObj.parentNode.removeChild(srcObj);
 			}
 		}
@@ -219,13 +298,17 @@ h2 {
 		}
 		//this.className = 'hour';
 		// See the section on the DataTransfer object.
-		if(e.dataTransfer.getData('text/html') != null){
-			if(!isNaN( parseInt( e.dataTransfer.getData('text/html') ) )){
-				getTicket(this.parentNode, e.dataTransfer.getData('text/html'));
-				this.parentNode.removeChild(this);
+		if(e.dataTransfer.getData('text/javascript') != null){
+			eval('var data='+e.dataTransfer.getData('text/javascript'));
+			if(!isNaN( data.id )){
+				if(data.type == "term"){
+					getTerm(this.parentNode, data.id);
+				}else if(data.type == "ticket"){
+					getTicket(this.parentNode, data.id);
+				}
 			}else{
 				srcObj.innerHTML = this.innerHTML;
-				this.innerHTML = e.dataTransfer.getData('text/html');
+				this.innerHTML = e.dataTransfer.getData('text/javascript');
 			}
 		}
 		this.className = 'tag';
@@ -247,6 +330,7 @@ h2 {
 		$.each(days, function(index, day) {
 			day.setAttribute("draggable", "true");
 		});
+		this.parentNode.removeChild(this);
 	}
 
 	$(document).ready(function() {
@@ -254,9 +338,9 @@ h2 {
 		$.each(days, function(index, day) {
 			day.style.position = "absolute";
 			day.style.top = "10px";
-			day.style.left = 100 + index*150 + "px";
-			day.style.width = "149px";
-			day.style.height = "720px";
+			day.style.left = 100 + index*151 + "px";
+			day.style.width = "150px";
+			day.style.height = "750px";
 			day.addEventListener('drop', dayHandleDrop, false);
 			day.addEventListener('dragleave', dayHandleDragLeave, false);
 			day.addEventListener('dragenter', dayHandleDragEnter, false);
@@ -272,13 +356,14 @@ h2 {
 <body>
 	<div class="body">
 		<div class="calendar">
-			<div draggable="true" class="target" id="monday"></div>
-			<div draggable="true" class="target" id="tuesday"></div>
-			<div draggable="true" class="target" id="wednesday"></div>
-			<div draggable="true" class="target" id="thursday"></div>
-			<div draggable="true" class="target" id="friday"></div>
-			<div draggable="true" class="target" id="saturday"></div>
-			<div draggable="true" class="target" id="sunday"></div>
+			<div draggable="true" class="target" id="monday" date="28.04"></div>
+			<div draggable="true" class="target" id="tuesday" date="29.04"></div>
+			<div draggable="true" class="target" id="wednesday" date="30.04"></div>
+			<div draggable="true" class="target" id="thursday" date="01.05"></div>
+			<div draggable="true" class="target" id="friday" date="02.05"></div>
+			<div draggable="true" class="target" id="saturday" date="03.05"></div>
+			<div draggable="true" class="target" id="sunday" date="04.05"></div>
+			<div draggable="true" class="target" id="Niedziela wilkanocna" date="11.11"></div>
 		</div>
 	</div>
 </body>

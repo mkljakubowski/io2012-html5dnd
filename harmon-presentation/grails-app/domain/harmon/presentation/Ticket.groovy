@@ -2,7 +2,8 @@ package harmon.presentation
 
 class Ticket {
 
-	static belongsTo = [term: Term, lecturer: Lecturer, room: Room, group: Group, subject: Subject]
+	static belongsTo = [lecturer: Lecturer, room: Room, group: Group, subject: Subject]
+	static hasMany = [term: Term]
 	static transients = ['maxPerson','minPerson']
 	
 	int length
@@ -10,15 +11,19 @@ class Ticket {
     static constraints = {
     }
 	
-	String toString(){
-		return lecturer.name + " " + room.name + " " + new Date().format("HH-mm-ss")
-	}
-	
 	int getMinPerson(){
 		return subject.minPerson
 	}
 
 	int getMaxPerson(){
 		return room.maxPerson > group.maxPerson ? group.maxPerson : room.maxPerson
+	}
+	
+	String toString(){
+		return id
+	}
+
+	String label(){
+		return subject.name + " " + room.building.name + " " + room.name + " " + lecturer
 	}
 }

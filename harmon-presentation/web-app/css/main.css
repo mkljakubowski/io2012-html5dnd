@@ -271,3 +271,27 @@ th.desc a {
     background: transparent url(../images/skin/database_save.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
+
+#choosecalendar {
+	position: absolute;
+	left: 0px;
+	top: 10px;
+	width: 100px;
+	height: 750px;
+	overflow: hidden;
+}
+
+#choosecalendar table *{
+	margin: 5px;
+	padding: 0px;
+	line-height: 12px;
+}
+
+.option input[type=submit] {
+	height: 18px;
+	width: 85px;
+}
+
+.option select {
+	width: 88px;
+}

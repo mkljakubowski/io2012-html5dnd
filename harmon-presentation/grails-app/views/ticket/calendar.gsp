@@ -46,21 +46,6 @@ table {
   user-select: none;
 }
 
-th {
-	width: 120px;
-}
-
-th:first-child, td:first-child{
-	width: 50px;
-	text-align:center;
-	font-weight: bold;
-}
-td {
-	overflow: hidden; 
-	word-wrap: break-word; 
-	width: 120px;
-	height: 40px;
-}
 h2 {
 	color: #48802C;
 	font-weight: normal;
@@ -204,6 +189,19 @@ h2 {
 		}
 	}
 
+	function removeTerm(id){
+		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}else{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+		}
+		xmlhttp.open("GET","/harmon-presentation/term/remove/" + id, true);
+		xmlhttp.send();
+	}
+
 	function ticketHandleMouseEnter(e){
 		$.each(days, function(index, day) {
 			day.setAttribute("draggable", "false");
@@ -282,7 +280,6 @@ h2 {
 					getTicket(this, data.id);
 				}
 			}else{
-				alert(srcObj.id);
 				getTerm(this, srcObj.id);
 				srcObj.parentNode.removeChild(srcObj);
 			}
@@ -302,7 +299,10 @@ h2 {
 			eval('var data='+e.dataTransfer.getData('text/javascript'));
 			if(!isNaN( data.id )){
 				if(data.type == "term"){
+					//update, for now delete and show dragged term
 					getTerm(this.parentNode, data.id);
+					removeTerm(this.id);
+					this.parentNode.removeChild(this);
 				}else if(data.type == "ticket"){
 					getTicket(this.parentNode, data.id);
 				}
@@ -333,8 +333,39 @@ h2 {
 		this.parentNode.removeChild(this);
 	}
 
+	function getRoomPerBuilding(buildingid){
+		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}else{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				$("#room").html(xmlhttp.responseText);
+			}
+		}
+		xmlhttp.open("GET","/harmon-presentation/room/options?buildingid=" + buildingid, true);
+		xmlhttp.send();
+	}
+
+	function buildingHandleChange(){
+		if( $("#building").val() != "" ){
+			getRoomPerBuilding($("#building").val());
+		}else{
+			$("#room").html("<option></option>");
+		}
+	}
+
+	function roomHandleChange(){
+	}
+
+	function lecturerHandleChange(){
+	}
+	
 	$(document).ready(function() {
 		days = document.querySelectorAll("div.target");
+		var weekno = 1;
 		$.each(days, function(index, day) {
 			day.style.position = "absolute";
 			day.style.top = "10px";
@@ -349,12 +380,74 @@ h2 {
 			day.innerHTML += "<h2></h2>";
 			day.childNodes[0].innerHTML = day.id;
 		});
+		for(weekno = 1; weekno < 16 ; weekno++){
+			$("#week").append("<option value=" + weekno + ">" + weekno + "</option>");
+		}
+		$("#week").append("<option value=\"all\">1 - 15</option>");
 	});
 
 </script>
 </head>
 <body>
 	<div class="body">
+		<div id="choosecalendar">
+			<form method="post">
+				<table>
+					<tr><td class="caption">Week</td></tr>
+					<tr><td class="option">
+						<select id="week" name="week" class="formlist">
+						</select>
+					</td></tr>
+					<tr><td class="caption">Year</td></tr>
+					<tr><td class="option">
+						<select id="year" name="year" class="formlist">
+							<option selected="selected" value="11/12">2011/2012</option>
+						</select>
+					</td></tr>
+					<tr><td class="caption">Semester</td></tr>
+					<tr><td class="option">
+						<select id="semester" name="semester" class="formlist">
+							<option value="1">I</option>
+							<option value="2" selected="selected">II</option>
+						</select>
+					</td></tr>
+					<tr><td><hr /></td></tr>
+					<tr><td class="caption">Building</td></tr>
+					<tr><td class="option">
+						<select id="building" name="building" class="formlist" onchange="buildingHandleChange()">
+							<option></option>
+							<g:each in="${buildings}" status="i" var="building">
+								<option value="${building.id}" ${ i==0?"selected=\"selected\"":"" }>${ building }</option>
+							</g:each>
+						</select>
+					</td></tr>
+					<tr><td class="caption">Room</td></tr>
+					<tr><td class="option">
+						<select id="room" name="room" class="formlist" onchange="roomHandleChange()">
+							<option></option>
+							<g:each in="${rooms}" status="i" var="room">
+								<option value="${room.id}" ${ i==0?"selected=\"selected\"":"" }>${ room }</option>
+							</g:each>
+						</select>
+					</td></tr>
+					<tr><td><hr /></td></tr>
+					<tr><td class="caption">Lecturer</td></tr>
+					<tr><td class="option">
+						<select id="lecturer" name="lecturer" class="formlist" onchange="lecturerHandleChange()">
+							<option selected="selected"></option>
+							<g:each in="${lecturers}" status="i" var="lecturer">
+								<option value="${lecturer.id}">${ lecturer }</option>
+							</g:each>
+						</select>
+					</td></tr>
+					<tr><td><hr /></td></tr>
+					<tr><td class="option"><g:submitButton name="View" action="calendar"/></td></tr>
+					<g:each in="${terms}" status="i" var="term">
+						<tr><td>${ term.id }</td></tr>
+					</g:each>
+				</table>
+			</form>
+		</div>
 		<div class="calendar">
 			<div draggable="true" class="target" id="monday" date="28.04"></div>
 			<div draggable="true" class="target" id="tuesday" date="29.04"></div>
@@ -363,7 +456,6 @@ h2 {
 			<div draggable="true" class="target" id="friday" date="02.05"></div>
 			<div draggable="true" class="target" id="saturday" date="03.05"></div>
 			<div draggable="true" class="target" id="sunday" date="04.05"></div>
-			<div draggable="true" class="target" id="Niedziela wilkanocna" date="11.11"></div>
 		</div>
 	</div>
 </body>

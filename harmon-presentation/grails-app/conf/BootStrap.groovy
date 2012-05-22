@@ -8,9 +8,15 @@ class BootStrap {
 		
 		def building = new Building(name: "D17")
 		building.save()
-		
+
+		def building2 = new Building(name: "C2")
+		building2.save()
+
 		def rum = new Room(name: "2.14", maxPerson: 25, building: building)
 		rum.save()
+		
+		def rum2 = new Room(name: "423", maxPerson: 25, building: building2)
+		rum2.save()
 		
 		def group = new Group(name: "A1", maxPerson: 25)
 		group.save()

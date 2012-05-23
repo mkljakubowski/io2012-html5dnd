@@ -4,85 +4,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
+        <link rel="stylesheet" href="${resource(dir:'css',file:'ticket.css')}">
+		<g:javascript library="jquery" plugin="jquery" />
+		<g:javascript library="ticket" />
         <g:set var="entityName" value="${message(code: 'ticket.label', default: 'Ticket')}" />
         <title><g:message code="default.list.label" args="[entityName]" /></title>
-    <g:javascript library="jquery" plugin="jquery" />
-        <style>
-        	.ticket {
-        		#background: #2D7;
-        	}
-        	.ticket:hover{
-        		#background: #7D2;
-        	}
-        	[draggable] {
-			  -moz-user-select: none;
-			  -khtml-user-select: none;
-			  -webkit-user-select: none;
-			  user-select: none;
-			}
-        </style>
 		<script type="text/javascript">
-			var tickets = [];
-								
-			function handleDragStart(e) {
-				this.style.opacity = '0.4'; // this / e.target is the source node.
-				e.dataTransfer.effectAllowed = 'move';
-				e.dataTransfer.setData('text/javascript', JSON.stringify({ "type":"ticket", "id": this.id}));
-			}
-		
-			function handleDragOver(e) {
-				if (e.preventDefault) {
-					e.preventDefault(); // Necessary. Allows us to drop.
-				}
-		
-				e.dataTransfer.dropEffect = 'move'; // See the section on the DataTransfer object.
-		
-				return false;
-			}
-			function handleDragEnter(e) {
-				// this / e.target is the current hover target.
-//				this.className = 'over';
-			}
-		
-			function handleDragLeave(e) {
-//				this.className = 'hour'; // this / e.target is previous target element.
-			}
-		
-			/*function handleDrop(e) {
-				// this / e.target is current target element.
-				if (e.stopPropagation) {
-					e.stopPropagation(); // stops the browser from redirecting.
-				}
-				//this.className = 'hour';
-				// See the section on the DataTransfer object.
-				if(e.dataTransfer.getData('text/html') != null){
-					getTicket(this, e.dataTransfer.getData('text/javascript'));
-				}
-				return false;
-			}*/
-		
-			function handleDragEnd(e) {
-				// this/e.target is the source node.
-				this.style.opacity = '1.0';
-			}
-		
-			$(document).ready(function() {
-				tickets = document.querySelectorAll("td.ticket");	
-				$.each(tickets, function(index, ticket) {
-					ticket.innerHTML = "";
-					ticket.style.position = "relative";
-					//hour.style.top = 50 + row * height + "px";
-					//hour.style.left = 100 + column * width + "px";
-					//ticket.style.height = "31px";
-					//ticket.style.width = "31px";
-					ticket.addEventListener('dragstart', handleDragStart, false);
-					ticket.addEventListener('dragenter', handleDragEnter, false)
-					ticket.addEventListener('dragover', handleDragOver, false);
-					ticket.addEventListener('dragleave', handleDragLeave, false);
-					ticket.addEventListener('drop', handleDrop, false);
-					ticket.addEventListener('dragend', handleDragEnd, false);
-				});
-			});
 		</script>
 		        
     </head>
@@ -112,14 +39,12 @@
                             <th><g:message code="ticket.room.label" default="Room" /></th>
                         
                             <th><g:message code="ticket.subject.label" default="Subject" /></th>
-                            
-                            <th>Drag</th>
                         
                         </tr>
                     </thead>
                     <tbody>
                     <g:each in="${ticketInstanceList}" status="i" var="ticketInstance">
-                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                        <tr class="ticket" draggable="true" id="${fieldValue(bean: ticketInstance, field: "id")}">
                         
                             <td><g:link action="show" id="${ticketInstance.id}">${fieldValue(bean: ticketInstance, field: "id")}</g:link></td>
                         
@@ -133,10 +58,11 @@
                         
                             <td>${fieldValue(bean: ticketInstance, field: "subject")}</td>
                         
-                        	<td draggable="true" class="ticket" id="${fieldValue(bean: ticketInstance, field: "id")}"></td>
-                        
                         </tr>
                     </g:each>
+                        <tr class="" draggable="true">
+                        	<td colspan="6">Drop content here to create new ticket</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

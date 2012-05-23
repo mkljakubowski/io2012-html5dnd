@@ -126,27 +126,28 @@ class TicketController {
 
 		[buildings: buildings, rooms: rooms, lecturers: Lecturer.list(), terms: terms]
 	}
+		
+	def dropedit = {
+		println new Date()
+        def ticketInstance = Ticket.get(params.id.toLong())
+        if (ticketInstance) {
+            if (params.version) {
+                def version = params.version.toLong()
+                if (ticketInstance.version > version) {
+                    return
+                }
+            }
+            ticketInstance.properties = params
+            ticketInstance.save(flush: true)
+        }
+		render("")
+	}
 	
-	def tag = {
-		def ticketInstance
-		def term
-		
-		Integer hour = params.minute.toInteger()/60
-		Integer minute = params.minute.toInteger()%60
-		def date = Date.parse("MM.dd.HH.mm", params.date + "." + hour + "." + minute)
-		
-		if(params.termid){
-			term = Term.get(params.termid)
-			term.date = date
-			term.save()
-			ticketInstance = term.ticket
-		}else if(params.ticketid){
-			ticketInstance = Ticket.get(params.ticketid)
-			term = new Term(ticket: ticketInstance, date: date)
-			term.save()
-		}
-
-		[ticketInstance: ticketInstance, termInstance: term]
+	def dropnew = {
+		println new Date()
+        def ticketInstance = new Ticket(params)
+        ticketInstance.save(flush: true)
+		render(view:"tag", model: [ticketInstance])
 	}
 	
 	static scaffold = true

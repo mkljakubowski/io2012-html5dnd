@@ -9,6 +9,10 @@ class Ticket {
 	int length
 		
     static constraints = {
+		lecturer nullable: true
+		room nullable: true
+		group nullable: true
+		subject nullable: true
     }
 	
 	int getMinPerson(){
@@ -25,5 +29,23 @@ class Ticket {
 
 	String label(){
 		return subject.name + " " + room.building.name + " " + room.name + " " + lecturer
+	}
+	
+	String json(){
+		def jsonstr = new String()
+		if(lecturer){
+			jsonstr += ", 'lecturerid': '" + lecturer.id + "'"
+		}
+		if(room){
+			jsonstr += ", 'roomid': '" + room.id + "'"
+		}
+		if(group){
+			jsonstr += ", 'groupid': '" + group.id + "'"
+		}
+		if(subject){
+			jsonstr += ", 'subjectid': '" + subject.id.toString() + "'"
+		}
+
+		return "{'ticketid': '" + id + "'" + jsonstr + "}"
 	}
 }

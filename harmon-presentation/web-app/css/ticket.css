@@ -1,0 +1,6 @@
+.ticket {
+	#background: #2D7;
+}
+.ticket:hover{
+	#background: #7D2;
+}

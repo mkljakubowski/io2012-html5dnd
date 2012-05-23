@@ -295,3 +295,10 @@ th.desc a {
 .option select {
 	width: 88px;
 }
+
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

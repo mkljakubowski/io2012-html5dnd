@@ -16,6 +16,10 @@
 		return (pos - 40)*2;
 	}
 	
+	function minuteToPosition(min){
+		return min/2 + 20;
+	}
+	
 	function getMousePosition(e){
 		mouseX = e.pageX;
 		mouseY = e.pageY;
@@ -250,8 +254,9 @@
 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 		}
 		xmlhttp.onreadystatechange=function(){
+			$("#room").html("<option></option>");
 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
-				$("#room").html(xmlhttp.responseText);
+				$("#room").append(xmlhttp.responseText);
 			}
 		};
 		xmlhttp.open("GET","/harmon-presentation/room/options?buildingid=" + buildingid, true);
@@ -264,12 +269,15 @@
 		}else{
 			$("#room").html("<option></option>");
 		}
+		refreshCalendar();
 	}
 
 	function roomHandleChange(){
+		refreshCalendar();
 	}
 
 	function lecturerHandleChange(){
+		refreshCalendar();
 	}
 	
 	function refreshTickets(){
@@ -280,9 +288,31 @@
 		});
 	}
 	
-	$(document).ready(function() {
+	function dateGroupHandleChange(){
+		var calendar = $("div.calendar");
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}else{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				var data = jQuery.parseJSON(xmlhttp.responseText);
+				calendar.html("");
+				$.each(data.days, function(index, day) {
+					calendar.append("<div draggable=\"true\" class=\"target\" id=\"" + day + "\" date=\"" + day + "\"></div>");
+				});
+				refreshCalendar();
+			}
+		};
+		xmlhttp.open("GET","/harmon-presentation/dateGroup/getDays/" + $(this).val(), true);
+		xmlhttp.send();
+	}
+	
+	function refreshCalendar(){
 		days = $("div.target[draggable=true]");
-		var weekno = 1;
 		$.each(days, function(index, day) {
 			day.style.position = "absolute";
 			day.style.top = "10px";
@@ -294,11 +324,57 @@
 			day.addEventListener('dragenter', dayHandleDragEnter, false);
 			day.addEventListener('dragover', dayHandleDragOver, false);
 			day.addEventListener('dragend', dayHandleDragEnd, false);
-			day.innerHTML += "<h2>" + day.id + "</h2>";
+			$(day).html("<h2>" + day.id + "</h2>");
+			getTicketsForDay(day);
 		});
-		for(weekno = 1; weekno < 16 ; weekno++){
-			$("#week").append("<option value=" + weekno + ">" + weekno + "</option>");
-		}
-		$("#week").append("<option value=\"all\">1 - 15</option>");
-	});
+	}
+	
+	function getTicketsForDay(day){
+		var buildingid = $("#building").val();
+		var lecturerid = $("#lecturer").val();
+		var roomid = $("#room").val();
 
+		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}else{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				$(day).append(xmlhttp.responseText);
+				refreshTermPosition();
+			}
+		};
+		xmlhttp.open("GET","/harmon-presentation/term/exactdata?date=" + day.id + "&building=" + buildingid + "&lecturer=" + lecturerid + "&room=" + roomid, true);
+		xmlhttp.send();
+	}
+	
+	function refreshTermPosition(){
+		var terms = $("div.tag[draggable=true]");
+		$.each(terms, function(index, term) {
+			term.addEventListener('mouseover', ticketHandleMouseEnter, false);
+			term.addEventListener('mouseout', ticketHandleMouseLeave, false);
+			term.addEventListener('drop', ticketHandleDrop, false);
+			term.addEventListener('dragleave', ticketHandleDragLeave, false);
+			term.addEventListener('dragenter', ticketHandleDragEnter, false);
+			term.addEventListener('dragover', ticketHandleDragOver, false);
+			term.addEventListener('dragend', ticketHandleDragEnd, false);
+			term.addEventListener('dragstart', ticketHandleDragStart, false);
+			eval("var ticJSON="+term.getAttribute('data'));
+			term.json = ticJSON;
+			term.style.position = "absolute";
+			term.style.top = minuteToPosition((term.json.hour/100)*60 + term.json.hour%100) + "px";
+			term.style.height = "90px";
+		});
+	}
+	
+	$(document).ready(function() {
+		document.data = {};
+		$("#dateGroups").change(dateGroupHandleChange);
+		$("#room").change(roomHandleChange);
+		$("#lecturer").change(lecturerHandleChange);
+		$("#building").change(buildingHandleChange);
+		
+		$("#dateGroups").change();		//invoke to display days in calendar
+	});

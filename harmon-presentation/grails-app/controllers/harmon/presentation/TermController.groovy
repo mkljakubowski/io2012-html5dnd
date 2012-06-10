@@ -1,5 +1,7 @@
 package harmon.presentation
 
+import java.text.SimpleDateFormat
+
 class TermController {
 
 	def remove = {
@@ -40,6 +42,27 @@ class TermController {
 			term = Term.get(params.id)
 			render (view: "tag", model: [ticketInstance: term.ticket, termInstance: term])
 		}
+	}
+	
+	def exactdata = {
+		def lecturerid = (params.lecturer)?(params.lecturer.toLong()):(-1)
+		def roomid = (params.room)?(params.room.toLong()):(-1)
+		def buildingid = (params.building)?(params.building.toLong()):(-1)
+		def formatter = new SimpleDateFormat("MM.dd");
+		
+		def terms = Term.list()
+		terms = terms.findAll { term -> formatter.format(term.date) == params.date }
+		if(buildingid > 0){
+			terms = terms.findAll { term -> term.ticket.room.building.id == buildingid }
+		}
+		if(roomid > 0){
+			terms = terms.findAll { term -> term.ticket.room.id == roomid }
+		}
+		if(lecturerid > 0){
+			terms = terms.findAll { term -> term.ticket.lecturer.id == lecturerid }
+		}
+		
+		[terms: terms]
 	}
 	
 	static scaffold = true

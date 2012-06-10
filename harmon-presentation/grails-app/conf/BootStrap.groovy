@@ -26,6 +26,12 @@ class BootStrap {
 		
 		def tic = new Ticket(lecturer: jan, room: rum, minute: 90, group: group, subject: sub)
 		tic.save()
+		
+		def mondays = new DateGroup(name: "Poniedzialki", datesStr: "06.04 06.11 06.18 06.25")
+		mondays.save()
+
+		def tuesdays = new DateGroup(name: "Wtorki", datesStr: "06.05 06.12 06.19 06.26")
+		tuesdays.save()
     }
     def destroy = {
     }

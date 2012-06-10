@@ -1,5 +1,7 @@
 package harmon.presentation
 
+import java.text.SimpleDateFormat
+
 class Term {
 
 	static belongsTo = [ticket: Ticket]
@@ -23,8 +25,9 @@ class Term {
 		if(ticket.subject){
 			jsonstr += ", 'subjectid': '" + ticket.subject.id + "'"
 		}
-
-		return "{'termid': '" + id + "', " + "'ticketid': '" + ticket.id + "'" + jsonstr + "}"
+		def formatter = new SimpleDateFormat("HHmm");
+		
+		return "{'termid': '" + id + "', " + "'ticketid': '" + ticket.id + "', " + "'hour': '" + formatter.format(date) + "'" + jsonstr + "}"
 	}
 
 }

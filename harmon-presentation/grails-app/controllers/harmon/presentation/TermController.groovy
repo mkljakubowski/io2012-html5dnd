@@ -12,21 +12,87 @@ class TermController {
 	}
 	
 	def tag = {
-		println new Date()
+		println "tag: " + new Date()
+		println params
 		def ticket
 		def term
 		
-		Integer hour = params.minute.toInteger()/60
-		Integer minute = params.minute.toInteger()%60
+		Integer hour = params.minute.toLong()/60
+		Integer minute = params.minute.toLong()%60
 		def date = Date.parse("MM.dd.HH.mm", params.date + "." + hour + "." + minute)
 		
 		if(params.id){
 			term = Term.get(params.id)
 			term.date = date
 			term.save()
+			
 			ticket = term.ticket
+			if(params.roomid != ""){
+				if(params.roomid.toLong() != ticket.room.id){
+					def ticketb = Ticket.list().find{ it.lecturer == ticket.lecturer && it.room.id == params.roomid.toLong() && it.group == ticket.group && it.subject == ticket.subject}
+					if(ticketb == null){
+						ticketb = new Ticket()
+						ticketb.lecturer = ticket.lecturer
+						ticketb.group = ticket.group
+						ticketb.room = Room.get(params.roomid)
+						ticketb.subject = ticket.subject 
+						ticketb.save()
+						ticket = ticketb
+					}else{
+						ticket = ticketb
+					}
+				}
+			}
+			if(params.lecturerid != ""){
+				if(params.lecturerid.toLong() != ticket.lecturer.id){
+					def ticketb = Ticket.list().find{ it.lecturer.id == params.lecturerid.toLong() && it.room == ticket.room && it.group == ticket.group && it.subject == ticket.subject}
+					if(ticketb == null){
+						ticketb = new Ticket()
+						ticketb.lecturer = Lecturer.get(params.lecturerid)
+						ticketb.group = ticket.group
+						ticketb.room = ticket.room
+						ticketb.subject = ticket.subject 
+						ticketb.save()
+						ticket = ticketb
+					}else{
+						ticket = ticketb
+					}
+				}
+			}
 		}else if(params.ticketid){
 			ticket = Ticket.get(params.ticketid.toLong())
+			if(params.roomid != ""){
+				if(params.roomid.toLong() != ticket.room.id){
+					def ticketb = Ticket.list().find{ it.lecturer == ticket.lecturer && it.room.id == params.roomid.toLong() && it.group == ticket.group && it.subject == ticket.subject }
+					if(ticketb == null){
+						ticketb = new Ticket()
+						ticketb.lecturer = ticket.lecturer
+						ticketb.group = ticket.group
+						ticketb.room = Room.get(params.roomid)
+						ticketb.subject = ticket.subject
+						ticketb.save()
+						ticket = ticketb
+					}else{
+						ticket = ticketb
+					}
+				}
+			}
+			if(params.lecturerid != ""){
+				if(params.lecturerid.toLong() != ticket.lecturer.id){
+					def ticketb = Ticket.list().find{ it.lecturer.id == params.lecturerid.toLong() && it.room == ticket.room && it.group == ticket.group && it.subject == ticket.subject }
+					if(ticketb == null){
+						ticketb = new Ticket()
+						ticketb.lecturer = Lecturer.get(params.lecturerid)
+						ticketb.group = ticket.group
+						ticketb.room = ticket.room
+						ticketb.subject = ticket.subject 
+						ticketb.save()
+						ticket = ticketb
+					}else{
+						ticket = ticketb
+					}
+				}
+			}
 			term = new Term(ticket: ticket, date: date)
 			term.save()
 		}

@@ -77,16 +77,16 @@
 		
 		if(mouseY){
 			if(json.termid){
-				xmlhttp.open("GET","/harmon-presentation/term/tag?id="+json.termid+"&date="+day.getAttribute('date') + "&minute=" + positionToMinute(mouseY), true);
+				xmlhttp.open("GET","/harmon-presentation/term/tag?id="+json.termid+"&date="+day.getAttribute('date') + "&minute=" + positionToMinute(mouseY) + "&roomid=" + $("#room").val()  + "&lecturerid=" + $("#lecturer").val() + "&buildingid=" + $("#building").val(), true);
 			}else{
-				xmlhttp.open("GET","/harmon-presentation/term/tag?ticketid="+json.ticketid+"&date="+obj.getAttribute('date') + "&minute=" + positionToMinute(mouseY), true);
+				xmlhttp.open("GET","/harmon-presentation/term/tag?ticketid="+json.ticketid+"&date="+obj.getAttribute('date') + "&minute=" + positionToMinute(mouseY) + "&roomid=" + $("#room").val()  + "&lecturerid=" + $("#lecturer").val() + "&buildingid=" + $("#building").val(), true);
 			}
 			xmlhttp.send();
 		}else{
 			if(json.termid){
-				ajaxreqstr = "/harmon-presentation/term/tag?id="+json.termid+"&date="+day.getAttribute('date') + "&minute=";
+				ajaxreqstr = "/harmon-presentation/term/tag?id="+json.termid+"&date="+day.getAttribute('date') + "&roomid=" + $("#room").val() + "&lecturerid=" + $("#lecturer").val() + "&buildingid=" + $("#building").val() + "&minute=";
 			}else{
-				ajaxreqstr = "/harmon-presentation/term/tag?ticketid="+json.ticketid+"&date="+day.getAttribute('date') + "&minute=";
+				ajaxreqstr = "/harmon-presentation/term/tag?ticketid="+json.ticketid+"&date="+day.getAttribute('date') + "&roomid=" + $("#room").val()  + "&lecturerid=" + $("#lecturer").val() + "&buildingid=" + $("#building").val() + "&minute=";
 			}
 			ajaxreq = xmlhttp;	
 		}

@@ -6,6 +6,9 @@ class BootStrap {
 		def jan = new Lecturer(firstname: "Jan", surname: "Nowak")
 		jan.save()
 		
+		def gosia = new Lecturer(firstname: "Gosia", surname: "Lis")
+		gosia.save()
+
 		def building = new Building(name: "D17")
 		building.save()
 
@@ -17,6 +20,9 @@ class BootStrap {
 		
 		def rum2 = new Room(name: "423", maxPerson: 25, building: building2)
 		rum2.save()
+		
+		def rum3 = new Room(name: "108", maxPerson: 100, building: building2)
+		rum3.save()
 		
 		def group = new Group(name: "A1", maxPerson: 25)
 		group.save()

@@ -1,5 +1,7 @@
 package harmon.presentation
 
+import grails.converters.JSON
+
 class DateGroup {
 
 	String name
@@ -9,13 +11,15 @@ class DateGroup {
     }
 	
 	def json() {
-		def dates = "{\"days\":["
-		def separator = ", "
-		datesStr.tokenize().each {
-			dates +=  "\"" + it + "\"" + separator
+		def map = []
+		datesStr.tokenize(';').each { range ->
+			def rlist = []
+			range.tokenize(',').each { day ->
+				rlist += day
+			}
+			map.add(rlist)
 		}
-		dates = dates.substring(0, dates.size() - separator.size())
-		dates+="]}"
+		map as JSON		// output: [["06.04"],["06.11"],["06.18","06.25"]]
 	}
 	
 	String toString(){ name }

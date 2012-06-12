@@ -301,9 +301,9 @@
 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
 				var data = jQuery.parseJSON(xmlhttp.responseText);
 				calendar.html("");
-				$.each(data.days, function(index, day) {
-					calendar.append("<div draggable=\"true\" class=\"target\" id=\"" + day + "\" date=\"" + day + "\"></div>");
-				});
+				for(var i=0 ; i < data.length ; i++){
+					calendar.append("<div draggable=\"true\" class=\"target\" id=\"" + data[i] + "\" date=\"" + data[i] + "\"></div>");
+				}
 				refreshCalendar();
 			}
 		};

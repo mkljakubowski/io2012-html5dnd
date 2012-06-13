@@ -12,28 +12,34 @@
 	document.onmousemove = getMousePosition;
 	document.onmouseup = getMousePosition;
 
+	//changes mouse coord to minutes fo day
 	function positionToMinute(pos){
 		return (pos - 40)*2;
 	}
 	
+	//changes minute of day into coord to place term correctly
 	function minuteToPosition(min){
 		return min/2 + 20;
 	}
 	
+	//handles mouse move
 	function getMousePosition(e){
 		mouseX = e.pageX;
 		mouseY = e.pageY;
-		if(positionMe){
+		if(positionMe){				//positions element which had mousey=null
 			positionMe.style.top = (e.pageY - 10) + "px";
 			positionMe = null;
 		}
-		if(ajaxreq){
+		if(ajaxreq){				//sends ajaxreq if mousey=null
 			ajaxreq.open("GET", ajaxreqstr + positionToMinute(e.pageY), true);
 			ajaxreq.send();
 			ajaxreq = null;
 		}
 	};
 	
+	//sends ajax to get div when ticket dropped
+	// day - item to put term into
+	// json - data for which to get term
 	function getTerm(day, json)
 	{
 		$(document).mousemove();
@@ -51,16 +57,16 @@
 			tic = day.childNodes[day.childNodes.length-1];
 		   	tic.style.position="absolute";
 			eval("var ticJSON="+tic.getAttribute('data'));
-			tic.json = ticJSON;
+			tic.json = ticJSON;									//assoc json with its object
 			tic.style.height = "90px";
-		   	if(mouseY){
+		   	if(mouseY){							//if mousey=bull then pass term for positioning
 		   		tic.style.top = (mouseY - 10) + "px";
 		   	}else{
 		   		positionMe = tic;
 		   	}		   	
 			
 			tics = day.childNodes;
-			$.each(tics, function(index, tici) {
+			$.each(tics, function(index, tici) {			//add event handlers for this term
 				if(tici.className=="tag"){
 					tici.addEventListener('mouseover', ticketHandleMouseEnter, false);
 					tici.addEventListener('mouseout', ticketHandleMouseLeave, false);
@@ -75,6 +81,7 @@
 		  }
 		};
 		
+		//send requests if dragging term or ticket
 		if(mouseY){
 			if(json.termid){
 				xmlhttp.open("GET","/harmon-presentation/term/tag?id="+json.termid+"&date="+day.getAttribute('date') + "&minute=" + positionToMinute(mouseY) + "&roomid=" + $("#room").val()  + "&lecturerid=" + $("#lecturer").val() + "&buildingid=" + $("#building").val(), true);
@@ -92,6 +99,7 @@
 		}
 	}
 
+	//removes term from db - will need to be used when term is dropped on recycle bin (not yet implemented)
 	function removeTerm(id){
 		var xmlhttp;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -175,7 +183,7 @@
 		// See the section on the DataTransfer object.
 		if(e.dataTransfer.getData('text/javascript') != null){
 			eval('var data='+e.dataTransfer.getData('text/javascript'));
-			if(data != undefined){
+			if(data != undefined){				//if data was recieved then getterm
 				if(data.type == undefined){
 					getTerm(this, data);
 				}else if(data.type == "ticket"){
@@ -200,14 +208,14 @@
 		// See the section on the DataTransfer object.
 		if(e.dataTransfer.getData('text/javascript') != null){
 			eval('var data='+e.dataTransfer.getData('text/javascript'));
-			if(data != undefined){
-				if(data.type == "term"){
+			if(data != undefined){					//if data was recieved after drop on term
+				if(data.type == "term"){			//if term then exchange and delete old
 					getTerm(this.parentNode, data.id);
 					removeTerm(this.id);
 					this.parentNode.removeChild(this);
-				}else if(data.type == "ticket"){
+				}else if(data.type == "ticket"){	//if ticket then exchange tickets
 					getTicket(this.parentNode, data.id);
-				}else if(data.type == "lecturer"){
+				}else if(data.type == "lecturer"){		//otherwise modify term data
 					this.json.lecturerid = data.lecturerid;
 					requestTicketEdit(this.json, function(str){refreshTickets();});
 				}else if(data.type == "group"){
@@ -246,6 +254,7 @@
 		this.parentNode.removeChild(this);
 	}
 
+	//when building is changed then get rooms for building
 	function getRoomPerBuilding(buildingid){
 		var xmlhttp;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -279,7 +288,8 @@
 	function lecturerHandleChange(){
 		refreshCalendar();
 	}
-	
+
+	//reloads terms in current calendar
 	function refreshTickets(){
 		$.each($("div.tag[draggable=true]"), function(index, ticket){
 			getTagString(ticket.json, function(str){
@@ -288,6 +298,7 @@
 		});
 	}
 	
+	//loads new days into calendar
 	function dateGroupHandleChange(){
 		var calendar = $("div.calendar");
 		
@@ -311,6 +322,7 @@
 		xmlhttp.send();
 	}
 	
+	//refreshes handlers for days in calendar
 	function refreshCalendar(){
 		days = $("div.target[draggable=true]");
 		$.each(days, function(index, day) {
@@ -329,6 +341,7 @@
 		});
 	}
 	
+	//reloads tickets for each day
 	function getTicketsForDay(day){
 		var buildingid = $("#building").val();
 		var lecturerid = $("#lecturer").val();
@@ -350,6 +363,7 @@
 		xmlhttp.send();
 	}
 	
+	//positions every loaded term
 	function refreshTermPosition(){
 		var terms = $("div.tag[draggable=true]");
 		$.each(terms, function(index, term) {

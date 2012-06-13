@@ -11,6 +11,11 @@ class TermController {
 		}
 	}
 
+	/*
+	 * happens after user drops a ticket or term on calendar
+	 * modifies object and return html.div object filled with data to display on page
+	 * params: [tickeid|id, roomid, minute(in day), date(list od days), lecturerid]
+	 */
 	def tag = {
 		println "tag: " + new Date()
 		def ticket
@@ -69,6 +74,10 @@ class TermController {
 		[ticketInstance: ticket, termInstance: term]
 	}
 
+	
+	/*
+	 * gets html.div for term id
+	 */
 	def simpletag = {
 		println new Date()
 		def term
@@ -79,6 +88,10 @@ class TermController {
 		}
 	}
 
+	/*
+	 * gets list if html.divs for supplied data
+	 * params;[lectuerid, roomid, buildingid]
+	 */
 	def exactdata = {
 		def lecturerid = (params.lecturer)?(params.lecturer.toLong()):(-1)
 		def roomid = (params.room)?(params.room.toLong()):(-1)

@@ -58,7 +58,7 @@
 		   	tic.style.position="absolute";
 			eval("var ticJSON="+tic.getAttribute('data'));
 			tic.json = ticJSON;									//assoc json with its object
-			tic.style.height = "90px";
+			tic.style.height = "45px";
 		   	if(mouseY){							//if mousey=bull then pass term for positioning
 		   		tic.style.top = (mouseY - 10) + "px";
 		   	}else{
@@ -379,7 +379,7 @@
 			term.json = ticJSON;
 			term.style.position = "absolute";
 			term.style.top = minuteToPosition((term.json.hour/100)*60 + term.json.hour%100) + "px";
-			term.style.height = "90px";
+			term.style.height = "45px";
 		});
 	}
 	

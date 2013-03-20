@@ -38,6 +38,7 @@ grails.converters.encoding = "UTF-8"
 grails.views.gsp.sitemesh.preprocess = true
 // scaffolding templates configuration
 grails.scaffolding.templates.domainSuffix = 'Instance'
+grails.project.war.file = "target/${appName}.war"
 
 // Set to false to use the new Grails 1.2 JSONBuilder in the render method
 grails.json.legacy.builder = false
@@ -54,13 +55,13 @@ grails.exceptionresolver.params.exclude = ['password']
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {
-        grails.serverURL = "http://www.changeme.com"
+        grails.serverURL = "localhost"
     }
     development {
-        grails.serverURL = "http://89.68.60.64:8080/${appName}"
+        grails.serverURL = "localhost"
     }
     test {
-        grails.serverURL = "http://89.68.60.64:8080/${appName}"
+        grails.serverURL = "localhost"
     }
 
 }
